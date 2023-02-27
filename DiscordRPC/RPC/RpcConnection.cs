@@ -542,7 +542,7 @@ namespace DiscordRPC.RPC
 
 						//Enqueue the appropriate message.
 						if (response.Command == Command.Subscribe)
-							EnqueueMessage(new SubscribeMessage(evt));
+							EnqueueMessage(new SubscribeMessage(evt)); //why u not called?
 						else
 							EnqueueMessage(new UnsubscribeMessage(evt));
 

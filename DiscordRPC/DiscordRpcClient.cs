@@ -229,7 +229,7 @@ namespace DiscordRPC
             SkipIdenticalPresence = true;
 
             //Prepare the logger
-            _logger = logger ?? new NullLogger();
+            _logger = logger ?? new ConsoleLogger();
 
             //Create the RPC client, giving it the important details
             connection = new RpcConnection(ApplicationID, ProcessID, TargetPipe, client ?? new ManagedNamedPipeClient(), autoEvents ? 0 : 128U)
@@ -333,14 +333,14 @@ namespace DiscordRPC
                         //Resend our presence and subscription
                         SynchronizeState();
                     }
-                   
-                    if (OnReady != null) 
+
+                    if (OnReady != null)
                         OnReady.Invoke(this, message as ReadyMessage);
-                 
+
                     break;
 
                 case MessageType.Close:
-                    if (OnClose != null) 
+                    if (OnClose != null)
                         OnClose.Invoke(this, message as CloseMessage);
                     break;
 
@@ -366,9 +366,9 @@ namespace DiscordRPC
                     {
                         var sub = message as SubscribeMessage;
                         Subscription |= sub.Event;
-                    }   
-                    
-                    if (OnSubscribe != null) 
+                    }
+
+                    if (OnSubscribe != null)
                         OnSubscribe.Invoke(this, message as SubscribeMessage);
 
                     break;
@@ -404,7 +404,6 @@ namespace DiscordRPC
                     if (OnConnectionFailed != null)
                         OnConnectionFailed.Invoke(this, message as ConnectionFailedMessage);
                     break;
-
                 //We got a message we dont know what to do with.
                 default:
                     Logger.Error("Message was queued with no appropriate handle! {0}", message.Type);
@@ -474,7 +473,7 @@ namespace DiscordRPC
             }
 
             //Update our local store
-            lock (_sync) 
+            lock (_sync)
             {
                 CurrentPresence = presence?.Clone();
             }
@@ -952,6 +951,10 @@ namespace DiscordRPC
 
             if ((type & EventType.JoinRequest) == EventType.JoinRequest)
                 connection.EnqueueCommand(new SubscribeCommand() { Event = RPC.Payload.ServerEvent.ActivityJoinRequest, IsUnsubscribe = isUnsubscribe });
+            if ((type & EventType.StartSpeaking) == EventType.StartSpeaking)
+                connection.EnqueueCommand(new SubscribeCommand() { Event = RPC.Payload.ServerEvent.SpeakingStart, IsUnsubscribe = isUnsubscribe });
+            if((type & EventType.StopSpeaking) == EventType.StopSpeaking)
+                connection.EnqueueCommand(new SubscribeCommand() { Event = RPC.Payload.ServerEvent.SpeakingStop, IsUnsubscribe = isUnsubscribe });
         }
 
         #endregion
