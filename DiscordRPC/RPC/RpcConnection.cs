@@ -576,7 +576,7 @@ namespace DiscordRPC.RPC
                         // response auswerten und accesstoken rausziehen
                         var token = response.Data.Value<string>("access_token");
                         AccessToken = token.Trim();
-                        EnqueueCommand(new AuthorizeCommand(AccessToken));
+                        //EnqueueCommand(new AuthorizeCommand(AccessToken));
                         ProcessCommandQueue();
                         // danach authorize aufrufen
                         //EnqueueCommand(new AuthorizationCommand()); 1079691557168492604
@@ -614,6 +614,27 @@ namespace DiscordRPC.RPC
                 case ServerEvent.ActivityJoinRequest:
                     var request = response.GetObject<JoinRequestMessage>();
                     EnqueueMessage(request);
+                    break;
+                case ServerEvent.SpeakingStart:
+                    // a user starts speaking
+                    var ev = response.GetObject<StartSpeakingMessage>();
+                    ev.Data = new ChannelUser()
+                    {
+                        ChannelId = response.Data.GetValue("channel_id").ToString(),
+                        UserId = response.Data.GetValue("user_id").ToString()
+                    };
+                    EnqueueMessage(ev);
+                    break;
+
+                case ServerEvent.SpeakingStop:
+                    //var stopSpeaking = response.GetObject<StopSpeakingMessage>();
+                    //stopSpeaking.Data = new ChannelUser()
+                    //{
+                    //    ChannelId = response.Data.GetValue("channel_id").ToString(),
+                    //    UserId = response.Data.GetValue("user_id").ToString()
+                    //};
+                    //EnqueueMessage(stopSpeaking)
+
                     break;
 
                 //Unkown dispatch event received. We should just ignore it.
