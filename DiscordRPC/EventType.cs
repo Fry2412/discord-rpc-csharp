@@ -33,7 +33,9 @@ namespace DiscordRPC
 
         SpeakingStart = 0x8,
 
-        SpeakingStop = 0x10
+        SpeakingStop = 0x10,
+
+        VoiceStateUpdate = 0x20,
 
 
     }

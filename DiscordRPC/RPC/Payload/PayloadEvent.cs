@@ -9,10 +9,16 @@ namespace DiscordRPC.RPC.Payload
 	/// </summary>
 	internal class EventPayload : IPayload
 	{
-		/// <summary>
-		/// The data the server sent too us
-		/// </summary>
-		[JsonProperty("data", NullValueHandling = NullValueHandling.Ignore)]
+        /// <summary>
+        /// The data the server sent too us
+        /// </summary>
+        [JsonProperty("args", NullValueHandling = NullValueHandling.Ignore)]
+        public JObject Arguments { get; set; }
+
+        /// <summary>
+        /// The data the server sent too us
+        /// </summary>
+        [JsonProperty("data", NullValueHandling = NullValueHandling.Ignore)]
 		public JObject Data { get; set; }
 
 		/// <summary>
@@ -21,9 +27,9 @@ namespace DiscordRPC.RPC.Payload
 		[JsonProperty("evt"), JsonConverter(typeof(EnumSnakeCaseConverter))]
 		public ServerEvent? Event { get; set; }
 
-        /// <summary>
-        /// Creates a payload with empty data
-        /// </summary>
+		/// <summary>
+		/// Creates a payload with empty data
+		/// </summary>
 		public EventPayload() : base() { Data = null; }
 
         /// <summary>

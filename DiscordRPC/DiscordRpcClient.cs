@@ -82,6 +82,9 @@ namespace DiscordRPC
         /// </summary>
         public int TargetPipe { get; private set; }
 
+
+        public bool HasAccessToken { get { lock (_sync) { return !String.IsNullOrEmpty(connection.AccessToken); } } }
+
         private RpcConnection connection;
 
         /// <summary>
@@ -953,10 +956,15 @@ namespace DiscordRPC
 
             if ((type & EventType.JoinRequest) == EventType.JoinRequest)
                 connection.EnqueueCommand(new SubscribeCommand() { Event = RPC.Payload.ServerEvent.ActivityJoinRequest, IsUnsubscribe = isUnsubscribe });
+
             if ((type & EventType.SpeakingStart) == EventType.SpeakingStart)
-                connection.EnqueueCommand(new SubscribeCommand() { Event = RPC.Payload.ServerEvent.SpeakingStart, IsUnsubscribe = isUnsubscribe });
+                connection.EnqueueCommand(new SubscribeCommand("1079691557168492604") { Event = RPC.Payload.ServerEvent.SpeakingStart, IsUnsubscribe = isUnsubscribe });
+
             if ((type & EventType.SpeakingStop) == EventType.SpeakingStop)
-                connection.EnqueueCommand(new SubscribeCommand() { Event = RPC.Payload.ServerEvent.SpeakingStop, IsUnsubscribe = isUnsubscribe });
+                connection.EnqueueCommand(new SubscribeCommand("1079691557168492604") { Event = RPC.Payload.ServerEvent.SpeakingStop, IsUnsubscribe = isUnsubscribe });
+
+            if ((type & EventType.VoiceStateUpdate) == EventType.VoiceStateUpdate)
+                connection.EnqueueCommand(new ChannelCommand("1079691557168492604") { Event = RPC.Payload.ServerEvent.VoiceStateUpdated, IsUnsubscribe = isUnsubscribe });
         }
 
         #endregion

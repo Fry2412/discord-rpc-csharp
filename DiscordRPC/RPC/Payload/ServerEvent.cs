@@ -56,13 +56,13 @@ namespace DiscordRPC.RPC.Payload
         [Obsolete("This value is appart of the RPC API and is not supported by this library.", true)]
         [EnumValue("VOICE_STATE_CREATED")]
         VoiceStateCreated,
-        [Obsolete("This value is appart of the RPC API and is not supported by this library.", true)]
-        [EnumValue("VOICE_STATE_UPDATED")]
+        //[Obsolete("This value is appart of the RPC API and is not supported by this library.", true)]
+        [EnumValue("VOICE_STATE_UPDATE")]
         VoiceStateUpdated,
         [Obsolete("This value is appart of the RPC API and is not supported by this library.", true)]
         [EnumValue("VOICE_STATE_DELETE")]
         VoiceStateDelete,
-        [Obsolete("This value is appart of the RPC API and is not supported by this library.", true)]
+        //[Obsolete("This value is appart of the RPC API and is not supported by this library.", true)]
         [EnumValue("VOICE_SETTINGS_UPDATE")]
         VoiceSettingsUpdate,
         [Obsolete("This value is appart of the RPC API and is not supported by this library.", true)]

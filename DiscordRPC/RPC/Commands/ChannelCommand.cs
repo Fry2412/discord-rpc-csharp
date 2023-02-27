@@ -10,33 +10,29 @@ using Newtonsoft.Json.Linq;
 
 namespace DiscordRPC.RPC.Commands
 {
-    internal class SubscribeCommand : ICommand
+    internal class ChannelCommand : ICommand
     {
-        private string? _channelId;
+        private string _channelId;
 
         public ServerEvent Event { get; set; }
         public bool IsUnsubscribe { get; set; }
 
-        public SubscribeCommand(string channelId = null)
+        public ChannelCommand(string channelId)
         {
             _channelId = channelId;
         }
 
         public IPayload PreparePayload(long nonce)
         {
-            JObject arg = null;
-            if (!String.IsNullOrEmpty(_channelId))
+            var d = new JObject()
             {
-                arg = new JObject
-                {
-                    new JProperty("channel_id", _channelId)
-                };
-            }
+                new JProperty("channel_id", _channelId)
+            };
             return new EventPayload(nonce)
             {
                 Command = IsUnsubscribe ? Command.Unsubscribe : Command.Subscribe,
-                Event = Event,
-                Arguments = arg
+                Arguments = d,
+                Event = Event
             };
         }
     }

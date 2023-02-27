@@ -9,6 +9,7 @@ using System.Threading;
 using Newtonsoft.Json;
 using DiscordRPC.Logging;
 using DiscordRPC.Events;
+using Newtonsoft.Json.Linq;
 
 namespace DiscordRPC.RPC
 {
@@ -97,6 +98,8 @@ namespace DiscordRPC.RPC
         #endregion
 
         #region Privates
+
+        public string AccessToken { get; set; }
 
         private string applicationID;                   //ID of the Discord APP
         private int processID;                          //ID of the process to track
@@ -315,6 +318,7 @@ namespace DiscordRPC.RPC
                         Logger.Trace("Connection Established. Starting reading loop...");
 
                         EnqueueCommand(new AuthenticateCommand());
+                        ProcessCommandQueue();
 
                         //Continously iterate, waiting for the frame
                         //We want to only stop reading if the inside tells us (mainloop), if we are aborting (abort) or the pipe disconnects
@@ -547,7 +551,7 @@ namespace DiscordRPC.RPC
 
                         //Enqueue the appropriate message.
                         if (response.Command == Command.Subscribe)
-                            EnqueueMessage(new SubscribeMessage(evt)); //why u not called?
+                            EnqueueMessage(new SubscribeMessage(evt));
                         else
                             EnqueueMessage(new UnsubscribeMessage(evt));
 
@@ -570,7 +574,12 @@ namespace DiscordRPC.RPC
                     case Command.Authenticate:
                         Logger.Trace("Got authenticate response ack.");
                         // response auswerten und accesstoken rausziehen
+                        var token = response.Data.Value<string>("access_token");
+                        AccessToken = token.Trim();
+                        EnqueueCommand(new AuthorizeCommand(AccessToken));
+                        ProcessCommandQueue();
                         // danach authorize aufrufen
+                        //EnqueueCommand(new AuthorizationCommand()); 1079691557168492604
                         break;
 
                     //we have no idea what we were sent

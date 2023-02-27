@@ -8,19 +8,26 @@ using System.Text;
 
 namespace DiscordRPC.RPC.Commands
 {
-    internal class AuthenticateCommand : ICommand
+    internal class AuthorizeCommand : ICommand
     {
+        private string _accvessToken;
+
+        [JsonProperty("access_token")]
+        public string AccessToken { get { return _accvessToken; } }
+
         [JsonProperty("client_id")]
         public string ClientId { get { return "1072421581743194122"; } }
-        [JsonProperty("scopes")]
-        public List<string> Scopes { get { return new List<string>() { "rpc", "identify" }; } }
 
+        public AuthorizeCommand(string accessToken)
+        {
+            _accvessToken = accessToken;
+        }
 
         public IPayload PreparePayload(long nonce)
         {
             return new ArgumentPayload(this, nonce)
             {
-                Command = Command.Authenticate
+                Command = Command.Authorize
             };
         }
     }
