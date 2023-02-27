@@ -31,9 +31,9 @@ namespace DiscordRPC
         /// </summary>
         JoinRequest = 0x4,
 
-        StartSpeaking = 0x8,
+        SpeakingStart = 0x8,
 
-        StopSpeaking = 0x10
+        SpeakingStop = 0x10
 
 
     }

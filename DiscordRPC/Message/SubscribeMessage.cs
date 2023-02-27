@@ -34,10 +34,10 @@ namespace DiscordRPC.Message
                     Event = EventType.Spectate;
                     break;
                 case ServerEvent.SpeakingStart:
-                    Event = EventType.StartSpeaking;
+                    Event = EventType.SpeakingStart;
                     break;
                 case ServerEvent.SpeakingStop:
-                    Event = EventType.StopSpeaking;
+                    Event = EventType.SpeakingStop;
                     break;
             }
         }

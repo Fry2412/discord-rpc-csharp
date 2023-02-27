@@ -65,7 +65,8 @@ namespace DiscordRPC.IO
         public ManagedNamedPipeClient()
         {
             _buffer = new byte[PipeFrame.MAX_SIZE];
-            Logger = new NullLogger();
+            Logger = new ConsoleLogger();
+            Logger.Level = LogLevel.Trace;
             _stream = null;
         }
 

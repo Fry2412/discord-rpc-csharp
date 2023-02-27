@@ -6,6 +6,7 @@ using DiscordRPC.Message;
 using DiscordRPC.Registry;
 using DiscordRPC.RPC;
 using DiscordRPC.RPC.Commands;
+
 using System;
 
 namespace DiscordRPC
@@ -230,6 +231,7 @@ namespace DiscordRPC
 
             //Prepare the logger
             _logger = logger ?? new ConsoleLogger();
+            _logger.Level = LogLevel.Trace;
 
             //Create the RPC client, giving it the important details
             connection = new RpcConnection(ApplicationID, ProcessID, TargetPipe, client ?? new ManagedNamedPipeClient(), autoEvents ? 0 : 128U)
@@ -951,9 +953,9 @@ namespace DiscordRPC
 
             if ((type & EventType.JoinRequest) == EventType.JoinRequest)
                 connection.EnqueueCommand(new SubscribeCommand() { Event = RPC.Payload.ServerEvent.ActivityJoinRequest, IsUnsubscribe = isUnsubscribe });
-            if ((type & EventType.StartSpeaking) == EventType.StartSpeaking)
+            if ((type & EventType.SpeakingStart) == EventType.SpeakingStart)
                 connection.EnqueueCommand(new SubscribeCommand() { Event = RPC.Payload.ServerEvent.SpeakingStart, IsUnsubscribe = isUnsubscribe });
-            if((type & EventType.StopSpeaking) == EventType.StopSpeaking)
+            if ((type & EventType.SpeakingStop) == EventType.SpeakingStop)
                 connection.EnqueueCommand(new SubscribeCommand() { Event = RPC.Payload.ServerEvent.SpeakingStop, IsUnsubscribe = isUnsubscribe });
         }
 
