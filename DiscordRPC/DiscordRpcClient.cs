@@ -1054,14 +1054,14 @@ namespace DiscordRPC
             Subscribe(EventType.VoiceChannelSelect);
             //Subscribe(EventType.VoiceStateUpdate);
             //SubscribeVoice();
-            //connection.EnqueueCommand(new GetChannelCommand());
         }
 
         private void SubscribeVoice()
         {
+            Unsubscribe(EventType.SpeakingStart);
+            Unsubscribe(EventType.SpeakingStop);
             Subscribe(EventType.SpeakingStart);
             Subscribe(EventType.SpeakingStop);
-            
         }
 
         public void SetVoiceChannel(string channelId)
