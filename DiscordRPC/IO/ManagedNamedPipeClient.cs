@@ -66,7 +66,7 @@ namespace DiscordRPC.IO
         {
             _buffer = new byte[PipeFrame.MAX_SIZE];
             Logger = new ConsoleLogger();
-            Logger.Level = LogLevel.Trace;
+            //Logger.Level = LogLevel.Trace;
             _stream = null;
         }
 

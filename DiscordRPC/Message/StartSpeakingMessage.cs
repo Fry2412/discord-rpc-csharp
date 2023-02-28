@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace DiscordRPC.Message
 {
-    public class StartSpeakingMessage: IMessage
+    public class StartSpeakingMessage : IMessage
     {
         public override MessageType Type => MessageType.SpeakingStart;
 
@@ -20,7 +20,7 @@ namespace DiscordRPC.Message
         public ServerEvent Event { get; internal set; }
 
         [JsonProperty("data")]
-        public ChannelUser Data{ get; internal set; }
+        public ChannelUser Data { get; internal set; }
 
     }
 }

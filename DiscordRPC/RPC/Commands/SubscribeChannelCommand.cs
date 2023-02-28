@@ -10,14 +10,14 @@ using Newtonsoft.Json.Linq;
 
 namespace DiscordRPC.RPC.Commands
 {
-    internal class ChannelCommand : ICommand
+    internal class SubscribeChannelCommand : ICommand
     {
         private string _channelId;
 
         public ServerEvent Event { get; set; }
         public bool IsUnsubscribe { get; set; }
 
-        public ChannelCommand(string channelId)
+        public SubscribeChannelCommand(string channelId)
         {
             _channelId = channelId;
         }

@@ -99,7 +99,9 @@ namespace DiscordRPC.RPC
 
         #region Privates
 
-        public string AccessToken { get; set; }
+        public string AccessToken { get; set; }         // Discord Access Token
+
+        public string CurrentChannelId { get; internal set; }       // ID of the Channel to subscribe
 
         private string applicationID;                   //ID of the Discord APP
         private int processID;                          //ID of the process to track
@@ -142,7 +144,7 @@ namespace DiscordRPC.RPC
 
             //Assign a default logger
             Logger = new ConsoleLogger();
-            Logger.Level = LogLevel.Trace;
+            //Logger.Level = LogLevel.Trace;
 
             delay = new BackoffDelay(500, 60 * 1000);
             _maxRtQueueSize = maxRtQueueSize;
@@ -582,6 +584,8 @@ namespace DiscordRPC.RPC
                         //EnqueueCommand(new AuthorizationCommand()); 1079691557168492604
                         break;
 
+                    //case Command
+
                     //we have no idea what we were sent
                     default:
                         Logger.Error("Unkown frame was received! {0}", response.Command);
@@ -615,28 +619,51 @@ namespace DiscordRPC.RPC
                     var request = response.GetObject<JoinRequestMessage>();
                     EnqueueMessage(request);
                     break;
+
                 case ServerEvent.SpeakingStart:
                     // a user starts speaking
-                    var ev = response.GetObject<StartSpeakingMessage>();
-                    ev.Data = new ChannelUser()
+                    var startSpeaking = response.GetObject<StartSpeakingMessage>();
+                    startSpeaking.Data = new ChannelUser()
                     {
                         ChannelId = response.Data.GetValue("channel_id").ToString(),
                         UserId = response.Data.GetValue("user_id").ToString()
                     };
-                    EnqueueMessage(ev);
+                    EnqueueMessage(startSpeaking);
                     break;
 
                 case ServerEvent.SpeakingStop:
-                    //var stopSpeaking = response.GetObject<StopSpeakingMessage>();
-                    //stopSpeaking.Data = new ChannelUser()
-                    //{
-                    //    ChannelId = response.Data.GetValue("channel_id").ToString(),
-                    //    UserId = response.Data.GetValue("user_id").ToString()
-                    //};
-                    //EnqueueMessage(stopSpeaking)
 
+                    var stopSpeaking = response.GetObject<StopSpeakingMessage>();
+                    stopSpeaking.Data = new ChannelUser()
+                    {
+                        ChannelId = response.Data.GetValue("channel_id").ToString(),
+                        UserId = response.Data.GetValue("user_id").ToString()
+                    };
+                    EnqueueMessage(stopSpeaking);
                     break;
 
+                // voice states updates
+                case ServerEvent.VoiceStateCreated:
+                    var voiceCreated = response.GetObject<VoiceSateCreatedMessage>();
+                    EnqueueMessage(voiceCreated);
+                    break;
+
+                case ServerEvent.VoiceStateUpdated:
+                    var voiceUpdated = response.GetObject<VoiceSateUpdatedMessage>();
+                    EnqueueMessage(voiceUpdated);
+                    break;
+
+                case ServerEvent.VoiceStateDelete:
+                    var voiceDeleted = response.GetObject<VoiceSateDeletedMessage>();
+                    EnqueueMessage(voiceDeleted);
+                    break;
+
+                case ServerEvent.VoiceChannelSelect:
+                    var voiceChannelSelected = response.GetObject<VoiceChannelSelectedMessage>();
+                    voiceChannelSelected.ChannelData = response.Data.ToObject<ChannelInfo>();
+                    EnqueueMessage(voiceChannelSelected);
+                    break;
+                //case 
                 //Unkown dispatch event received. We should just ignore it.
                 default:
                     Logger.Warning("Ignoring {0}", response.Event.Value);

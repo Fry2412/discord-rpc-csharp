@@ -1,4 +1,5 @@
 ﻿using DiscordRPC.Message;
+using DiscordRPC.RPC;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -91,4 +92,10 @@ namespace DiscordRPC.Events
     /// <param name="sender">The handler that sent this event</param>
     /// <param name="msg">The raw message from the RPC</param>
     public delegate void OnRpcMessageEvent(object sender, IMessage msg);
+
+    public delegate void OnVoiceChannelSelectedEvent(object sender, VoiceChannelSelectedMessage msg);
+
+    public delegate void OnUserStartSpeakingEvent(object sender, StartSpeakingMessage msg);
+
+    public delegate void OnUserStopSpeakingEvent(object sender, StopSpeakingMessage msg);
 }

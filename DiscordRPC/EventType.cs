@@ -37,6 +37,6 @@ namespace DiscordRPC
 
         VoiceStateUpdate = 0x20,
 
-
+        VoiceChannelSelect = 0x40,
     }
 }

@@ -200,6 +200,12 @@ namespace DiscordRPC
         /// The RPC Connection has sent a message. Called before any other event and executed from the RPC Thread.
         /// </summary>
         public event OnRpcMessageEvent OnRpcMessage;
+
+        public event OnVoiceChannelSelectedEvent OnVoiceChannelSelected;
+
+        public event OnUserStartSpeakingEvent OnUserStartSpeaking;
+
+        public event OnUserStopSpeakingEvent OnUserStopSpeaking;
         #endregion
 
         #region Initialization
@@ -234,7 +240,7 @@ namespace DiscordRPC
 
             //Prepare the logger
             _logger = logger ?? new ConsoleLogger();
-            _logger.Level = LogLevel.Trace;
+            //_logger.Level = LogLevel.Trace;
 
             //Create the RPC client, giving it the important details
             connection = new RpcConnection(ApplicationID, ProcessID, TargetPipe, client ?? new ManagedNamedPipeClient(), autoEvents ? 0 : 128U)
@@ -409,6 +415,22 @@ namespace DiscordRPC
                     if (OnConnectionFailed != null)
                         OnConnectionFailed.Invoke(this, message as ConnectionFailedMessage);
                     break;
+
+                case MessageType.VoiceChannelSelected:
+                    if (OnVoiceChannelSelected != null)
+                        OnVoiceChannelSelected.Invoke(this, message as VoiceChannelSelectedMessage);
+                    break;
+
+                case MessageType.SpeakingStart:
+                    if (OnUserStartSpeaking != null)
+                        OnUserStartSpeaking.Invoke(this, message as StartSpeakingMessage);
+                    break;
+
+                case MessageType.SpeakingStop:
+                    if (OnUserStopSpeaking != null)
+                        OnUserStopSpeaking.Invoke(this, message as StopSpeakingMessage);
+                    break;
+
                 //We got a message we dont know what to do with.
                 default:
                     Logger.Error("Message was queued with no appropriate handle! {0}", message.Type);
@@ -958,13 +980,16 @@ namespace DiscordRPC
                 connection.EnqueueCommand(new SubscribeCommand() { Event = RPC.Payload.ServerEvent.ActivityJoinRequest, IsUnsubscribe = isUnsubscribe });
 
             if ((type & EventType.SpeakingStart) == EventType.SpeakingStart)
-                connection.EnqueueCommand(new SubscribeCommand("1079691557168492604") { Event = RPC.Payload.ServerEvent.SpeakingStart, IsUnsubscribe = isUnsubscribe });
+                connection.EnqueueCommand(new SubscribeCommand(connection.CurrentChannelId) { Event = RPC.Payload.ServerEvent.SpeakingStart, IsUnsubscribe = isUnsubscribe });
 
             if ((type & EventType.SpeakingStop) == EventType.SpeakingStop)
-                connection.EnqueueCommand(new SubscribeCommand("1079691557168492604") { Event = RPC.Payload.ServerEvent.SpeakingStop, IsUnsubscribe = isUnsubscribe });
+                connection.EnqueueCommand(new SubscribeCommand(connection.CurrentChannelId) { Event = RPC.Payload.ServerEvent.SpeakingStop, IsUnsubscribe = isUnsubscribe });
 
             if ((type & EventType.VoiceStateUpdate) == EventType.VoiceStateUpdate)
-                connection.EnqueueCommand(new ChannelCommand("1079691557168492604") { Event = RPC.Payload.ServerEvent.VoiceStateUpdated, IsUnsubscribe = isUnsubscribe });
+                connection.EnqueueCommand(new SubscribeChannelCommand(connection.CurrentChannelId) { Event = RPC.Payload.ServerEvent.VoiceStateUpdated, IsUnsubscribe = isUnsubscribe });
+
+            if ((type & EventType.VoiceChannelSelect) == EventType.VoiceChannelSelect)
+                connection.EnqueueCommand(new SubscribeCommand() { Event = RPC.Payload.ServerEvent.VoiceChannelSelect, IsUnsubscribe = isUnsubscribe });
         }
 
         #endregion
@@ -1024,5 +1049,27 @@ namespace DiscordRPC
             IsDisposed = true;
         }
 
+        public void InitWithToken()
+        {
+            Subscribe(EventType.VoiceChannelSelect);
+            //Subscribe(EventType.VoiceStateUpdate);
+            //SubscribeVoice();
+            //connection.EnqueueCommand(new GetChannelCommand());
+        }
+
+        private void SubscribeVoice()
+        {
+            Subscribe(EventType.SpeakingStart);
+            Subscribe(EventType.SpeakingStop);
+            
+        }
+
+        public void SetVoiceChannel(string channelId)
+        {
+            this.connection.CurrentChannelId = channelId;
+            SubscribeVoice();
+            // reinit voice state Subscriptions
+
+        }
     }
 }

@@ -62,6 +62,9 @@ namespace DiscordRPC.Message
         ConnectionFailed,
 
         SpeakingStart,
-        SpeakingStop
+        SpeakingStop,
+        VoiceStateCreated,
+        VoiceStateUpdated,
+        VoiceChannelSelected
     }
 }
