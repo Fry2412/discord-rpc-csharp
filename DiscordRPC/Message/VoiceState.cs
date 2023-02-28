@@ -2,7 +2,7 @@
 
 namespace DiscordRPC.Message
 {
-    internal class VoiceState
+    public class VoiceState
     {
         [JsonProperty("mute")]
         public bool Mute { get; set; }

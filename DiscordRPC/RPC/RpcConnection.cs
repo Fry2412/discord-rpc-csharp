@@ -26,7 +26,7 @@ namespace DiscordRPC.RPC
         /// <summary>
         /// The rate of poll to the discord pipe.
         /// </summary>
-        public static readonly int POLL_RATE = 1000;
+        public static readonly int POLL_RATE = 250;
 
         /// <summary>
         /// Should we send a null presence on the fairwells?
@@ -579,9 +579,17 @@ namespace DiscordRPC.RPC
                         var token = response.Data.Value<string>("access_token");
                         AccessToken = token.Trim();
                         //EnqueueCommand(new AuthorizeCommand(AccessToken));
-                        ProcessCommandQueue();
+                        //ProcessCommandQueue();
                         // danach authorize aufrufen
                         //EnqueueCommand(new AuthorizationCommand()); 1079691557168492604
+                        break;
+
+                    case Command.GetSelectedVoiceChannel:
+                        var res = response;
+                        var channel = res.GetObject<GetSelectedChannelMessage>();
+                        if (channel is not null)
+                            channel.ChannelData = res.Data.ToObject<ChannelData>();
+                        EnqueueMessage(channel);
                         break;
 
                     //case Command
@@ -663,6 +671,7 @@ namespace DiscordRPC.RPC
                     voiceChannelSelected.ChannelData = response.Data.ToObject<ChannelInfo>();
                     EnqueueMessage(voiceChannelSelected);
                     break;
+
                 //case 
                 //Unkown dispatch event received. We should just ignore it.
                 default:
