@@ -1088,8 +1088,13 @@ namespace DiscordRPC
         public void InitWithToken()
         {
             // get initial Voice State
-            this.connection.EnqueueCommand(new GetChannelCommand());
+            SendGetUsersInChannelCommand();
             Subscribe(EventType.VoiceChannelSelect);
+        }
+
+        public void SendGetUsersInChannelCommand()
+        {
+            this.connection.EnqueueCommand(new GetChannelCommand());
         }
 
         private void SubscribeVoice()

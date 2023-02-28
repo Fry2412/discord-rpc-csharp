@@ -56,7 +56,7 @@ namespace DiscordRPC.RPC.Payload
         [EnumValue("VOICE_CHANNEL_SELECT")]
         VoiceChannelSelect,
 
-        [EnumValue("VOICE_STATE_CREATED")]
+        [EnumValue("VOICE_STATE_CREATE")]
         VoiceStateCreated,
 
         [EnumValue("VOICE_STATE_UPDATE")]
