@@ -206,7 +206,16 @@ namespace DiscordRPC
         public event OnUserStartSpeakingEvent OnUserStartSpeaking;
 
         public event OnUserStopSpeakingEvent OnUserStopSpeaking;
+
         public event OnSelectedVoiceChannelEvent OnSelectedVoiceChannel;
+
+        public event OnVoiceStateCreatedEvent OnVoiceStateCreated;
+
+        public event OnVoiceStateUpdatedEvent OnVoiceStateUpdated;
+
+        public event OnVoiceStateDeletedEvent OnVoiceStateDeleted;
+
+
         #endregion
 
         #region Initialization
@@ -435,6 +444,21 @@ namespace DiscordRPC
                 case MessageType.GetSelectedVoiceChannel:
                     if (OnSelectedVoiceChannel != null)
                         OnSelectedVoiceChannel.Invoke(this, message as GetSelectedChannelMessage);
+                    break;
+
+                case MessageType.VoiceStateUpdated:
+                    if (OnVoiceStateUpdated != null)
+                        OnVoiceStateUpdated.Invoke(this, message as VoiceStateUpdatedMessage);
+                    break;
+
+                case MessageType.VoiceStateCreated:
+                    if (OnVoiceStateCreated != null)
+                        OnVoiceStateCreated.Invoke(this, message as VoiceStateCreatedMessage);
+                    break;
+
+                case MessageType.VoiceStateDeleted:
+                    if (OnVoiceStateDeleted != null)
+                        OnVoiceStateDeleted.Invoke(this, message as VoiceStateDeletedMessage);
                     break;
 
                 //We got a message we dont know what to do with.
@@ -994,6 +1018,12 @@ namespace DiscordRPC
             if ((type & EventType.VoiceStateUpdate) == EventType.VoiceStateUpdate && !String.IsNullOrEmpty(connection.CurrentChannelId))
                 connection.EnqueueCommand(new SubscribeChannelCommand(connection.CurrentChannelId) { Event = RPC.Payload.ServerEvent.VoiceStateUpdated, IsUnsubscribe = isUnsubscribe });
 
+            if ((type & EventType.VoiceStateCreated) == EventType.VoiceStateCreated && !String.IsNullOrEmpty(connection.CurrentChannelId))
+                connection.EnqueueCommand(new SubscribeChannelCommand(connection.CurrentChannelId) { Event = RPC.Payload.ServerEvent.VoiceStateCreated, IsUnsubscribe = isUnsubscribe });
+
+            if ((type & EventType.VoiceStateDeletetd) == EventType.VoiceStateDeletetd && !String.IsNullOrEmpty(connection.CurrentChannelId))
+                connection.EnqueueCommand(new SubscribeChannelCommand(connection.CurrentChannelId) { Event = RPC.Payload.ServerEvent.VoiceStateDelete, IsUnsubscribe = isUnsubscribe });
+
             if ((type & EventType.VoiceChannelSelect) == EventType.VoiceChannelSelect)
                 connection.EnqueueCommand(new SubscribeCommand() { Event = RPC.Payload.ServerEvent.VoiceChannelSelect, IsUnsubscribe = isUnsubscribe });
         }
@@ -1059,19 +1089,22 @@ namespace DiscordRPC
         {
             // get initial Voice State
             this.connection.EnqueueCommand(new GetChannelCommand());
-
-            // subscibre channel switching
-            //Subscribe(EventType.VoiceStateUpdate);
             Subscribe(EventType.VoiceChannelSelect);
-            //SubscribeVoice();
         }
 
         private void SubscribeVoice()
         {
             Unsubscribe(EventType.SpeakingStart);
             Unsubscribe(EventType.SpeakingStop);
+            Unsubscribe(EventType.VoiceStateUpdate);
+            Unsubscribe(EventType.VoiceStateCreated);
+            Unsubscribe(EventType.VoiceStateDeletetd);
+
             Subscribe(EventType.SpeakingStart);
             Subscribe(EventType.SpeakingStop);
+            Subscribe(EventType.VoiceStateUpdate);
+            Subscribe(EventType.VoiceStateCreated);
+            Subscribe(EventType.VoiceStateDeletetd);
         }
 
         public void SetVoiceChannel(string channelId)

@@ -1,7 +1,6 @@
-﻿using DiscordRPC.Message;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
-namespace DiscordRPC.RPC
+namespace DiscordRPC.Message
 {
     public class VoiceChannelSelectedMessage : IMessage
     {

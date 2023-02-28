@@ -2,7 +2,7 @@
 
 namespace DiscordRPC.Message
 {
-    internal class VoiceStateData
+    public class VoiceStateData
     {
         [JsonProperty("voice_state")]
         public VoiceState State { get; set; }
@@ -23,7 +23,7 @@ namespace DiscordRPC.Message
         public object Pan { get; set; }
     }
 
-    internal class Pan
+    public class Pan
     {
         [JsonProperty("left")]
         public float Left { get; set; }

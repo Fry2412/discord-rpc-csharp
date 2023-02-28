@@ -26,7 +26,7 @@ namespace DiscordRPC.RPC
         /// <summary>
         /// The rate of poll to the discord pipe.
         /// </summary>
-        public static readonly int POLL_RATE = 250;
+        public static readonly int POLL_RATE = 50;
 
         /// <summary>
         /// Should we send a null presence on the fairwells?
@@ -652,17 +652,20 @@ namespace DiscordRPC.RPC
 
                 // voice states updates
                 case ServerEvent.VoiceStateCreated:
-                    var voiceCreated = response.GetObject<VoiceSateCreatedMessage>();
+                    var voiceCreated = response.GetObject<VoiceStateCreatedMessage>();
+                    voiceCreated.Data = response.Data.ToObject<UserVoiceState>();
                     EnqueueMessage(voiceCreated);
                     break;
 
                 case ServerEvent.VoiceStateUpdated:
-                    var voiceUpdated = response.GetObject<VoiceSateUpdatedMessage>();
+                    var voiceUpdated = response.GetObject<VoiceStateUpdatedMessage>();
+                    voiceUpdated.Data = response.Data.ToObject<UserVoiceState>();
                     EnqueueMessage(voiceUpdated);
                     break;
 
                 case ServerEvent.VoiceStateDelete:
-                    var voiceDeleted = response.GetObject<VoiceSateDeletedMessage>();
+                    var voiceDeleted = response.GetObject<VoiceStateDeletedMessage>();
+                    voiceDeleted.Data = response.Data.ToObject<UserVoiceState>();
                     EnqueueMessage(voiceDeleted);
                     break;
 

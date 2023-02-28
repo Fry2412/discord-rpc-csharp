@@ -8,7 +8,7 @@ namespace DiscordRPC
     /// <summary>
     /// The type of event receieved by the RPC. A flag type that can be combined.
     /// </summary>
-    [System.Flags]
+    [Flags]
     public enum EventType
     {
         /// <summary>
@@ -38,5 +38,9 @@ namespace DiscordRPC
         VoiceStateUpdate = 0x20,
 
         VoiceChannelSelect = 0x40,
+
+        VoiceStateCreated = 0x80,
+
+        VoiceStateDeletetd = 0x100
     }
 }

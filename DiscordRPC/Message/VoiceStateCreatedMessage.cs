@@ -3,14 +3,14 @@ using System.Reflection.Metadata.Ecma335;
 
 namespace DiscordRPC.Message
 {
-    internal class VoiceSateCreatedMessage : IMessage
+    public class VoiceStateCreatedMessage : IMessage
     {
 
         [JsonProperty("evt")]
         public override MessageType Type => MessageType.VoiceStateCreated;
 
         [JsonProperty("data")]
-        public VoiceStateData Data { get; set; }
+        public UserVoiceState Data { get; set; }
 
     }
 }

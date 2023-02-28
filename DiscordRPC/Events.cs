@@ -98,5 +98,12 @@ namespace DiscordRPC.Events
     public delegate void OnUserStartSpeakingEvent(object sender, StartSpeakingMessage msg);
 
     public delegate void OnUserStopSpeakingEvent(object sender, StopSpeakingMessage msg);
+
     public delegate void OnSelectedVoiceChannelEvent(object sender, GetSelectedChannelMessage msg);
+
+    public delegate void OnVoiceStateCreatedEvent(object sender, VoiceStateCreatedMessage msg);
+
+    public delegate void OnVoiceStateUpdatedEvent(object sender, VoiceStateUpdatedMessage msg);
+
+    public delegate void OnVoiceStateDeletedEvent(object senderm, VoiceStateDeletedMessage msg);
 }

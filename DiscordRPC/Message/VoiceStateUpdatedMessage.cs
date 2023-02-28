@@ -2,14 +2,14 @@
 
 namespace DiscordRPC.Message
 {
-    internal class VoiceSateUpdatedMessage : IMessage
+    public class VoiceStateUpdatedMessage : IMessage
     {
 
         [JsonProperty("evt")]
         public override MessageType Type => MessageType.VoiceStateUpdated;
 
         [JsonProperty("data")]
-        public VoiceStateData Data { get; set; }
+        public UserVoiceState Data { get; set; }
 
     }
 }

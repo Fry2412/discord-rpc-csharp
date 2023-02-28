@@ -65,7 +65,8 @@ namespace DiscordRPC.Message
         SpeakingStop,
         VoiceStateCreated,
         VoiceStateUpdated,
-        VoiceChannelSelected,
-        GetSelectedVoiceChannel
+        VoiceStateDeleted,
+        GetSelectedVoiceChannel,
+        VoiceChannelSelected
     }
 }
